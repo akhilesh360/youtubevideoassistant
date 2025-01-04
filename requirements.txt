@@ -1,0 +1,5 @@
+streamlit
+python-dotenv
+youtube-transcript-api
+openai  # Required for DeepSeek API (OpenAI-compatible SDK)
+re  # For regular expressions (built-in Python module)
