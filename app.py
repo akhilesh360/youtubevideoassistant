@@ -1,19 +1,26 @@
 import streamlit as st
-from dotenv import load_dotenv
 import os
 from openai import OpenAI
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 import re
 
-# Load environment variables
-load_dotenv()
+# Load environment variables (from GitHub environment secrets)
+api_key = os.environ.get("DEEPSEEK_API_KEY")
+http_proxy = os.environ.get("HTTP_PROXY")
+https_proxy = os.environ.get("HTTPS_PROXY")
+
+# Validate secrets
+if not api_key or not http_proxy or not https_proxy:
+    raise ValueError("Missing required environment variables: DEEPSEEK_API_KEY, HTTP_PROXY, HTTPS_PROXY")
 
 # Configure DeepSeek API
-api_key = os.getenv("DEEPSEEK_API_KEY")
-if not api_key:
-    raise ValueError("DEEPSEEK_API_KEY environment variable not set")
-
 client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+
+# Proxy dictionary for requests
+proxies = {
+    "http": http_proxy,
+    "https": https_proxy,
+}
 
 # Prompts
 summary_prompt = """You are a YouTube video summarizer. You will summarize the transcript text 
@@ -39,12 +46,6 @@ def extract_video_id(youtube_url):
 def extract_transcript_details(youtube_video_url):
     try:
         video_id = extract_video_id(youtube_video_url)
-
-        proxies = {
-            "http": os.getenv("HTTP_PROXY"),
-            "https": os.getenv("HTTPS_PROXY"),
-        }
-
         transcript_text = YouTubeTranscriptApi.get_transcript(video_id, proxies=proxies)
         transcript = " ".join([entry["text"] for entry in transcript_text])
         return transcript
