@@ -1,26 +1,21 @@
 import streamlit as st
-import os
 from openai import OpenAI
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 import re
 
-# Load environment variables (from GitHub environment secrets)
-api_key = os.environ.get("DEEPSEEK_API_KEY")
-http_proxy = os.environ.get("HTTP_PROXY")
-https_proxy = os.environ.get("HTTPS_PROXY")
+# ✅ Load from Streamlit Cloud Secrets
+api_key = st.secrets["DEEPSEEK_API_KEY"]
+http_proxy = st.secrets["HTTP_PROXY"]
+https_proxy = st.secrets["HTTPS_PROXY"]
 
-# Validate secrets
-if not api_key or not http_proxy or not https_proxy:
-    raise ValueError("Missing required environment variables: DEEPSEEK_API_KEY, HTTP_PROXY, HTTPS_PROXY")
-
-# Configure DeepSeek API
-client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
-
-# Proxy dictionary for requests
+# ✅ Proxy dictionary
 proxies = {
     "http": http_proxy,
     "https": https_proxy,
 }
+
+# ✅ Configure DeepSeek API
+client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
 
 # Prompts
 summary_prompt = """You are a YouTube video summarizer. You will summarize the transcript text 
