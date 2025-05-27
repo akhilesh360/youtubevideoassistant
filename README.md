@@ -1,4 +1,3 @@
-````markdown
 # YouTube Video Assistant (Streamlit)
 
 A Streamlit application that enables users to summarize YouTube video transcripts and perform question-answering using DeepSeek's AI API. The app extracts video transcripts via the YouTube Transcript API, summarizes content, and provides interactive Q&A functionality.
